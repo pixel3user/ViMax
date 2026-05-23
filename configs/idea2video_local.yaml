@@ -1,38 +1,62 @@
 # ViMax Local Configuration
 # ===========================
 # Uses:
-#   - Claude (Sonnet/Opus) via Anthropic API for scripting/planning
-#   - FLUX.1-dev (local) for image generation
+#   - Gemini 2.5 Flash Lite via OpenRouter (FREE) for scripting/planning
+#   - FLUX.1-schnell (local, no login required) for image generation
 #   - LTX-Video 2 (local) for video generation
 #
 # Hardware: RTX PRO 6000 (96GB VRAM) or any 24GB+ GPU
 #
 # Required environment variables:
-#   - ANTHROPIC_API_KEY: Your Anthropic API key for Claude
+#   - OPENROUTER_API_KEY: Free key from https://openrouter.ai/keys
 #
-# Optional: Set HF_TOKEN for gated model access (FLUX.1-dev requires acceptance)
+# Optional: Set HF_TOKEN for gated model access
+#
+# ---
+# WHY DO WE NEED AN LLM API?
+# ViMax calls the LLM programmatically 50-100+ times during video generation
+# (scripting, storyboarding, shot decomposition, reference image selection).
+# This CANNOT be done manually — it must be an API endpoint.
+#
+# FREE OPTIONS:
+#   1. Gemini 2.5 Flash Lite via OpenRouter (recommended, free tier)
+#   2. Gemini 2.5 Flash via Google AI Studio (free, 15 RPM)
+#   3. Local LLM via Ollama (e.g., Qwen 2.5 32B) — but shares GPU with image/video
+#
+# If you want to use your Kiro/Claude for the IDEA (story concept), just write
+# your idea in main_idea2video.py and let the free LLM handle the pipeline calls.
 
 chat_model:
   init_args:
-    # Claude Sonnet 4.6 via Anthropic API (used for scripting, storyboarding, etc.)
-    # Change to "anthropic/claude-sonnet-4-20250514" or similar as needed
-    model: anthropic/claude-sonnet-4-20250514
+    # Option 1: Gemini Flash Lite via OpenRouter (FREE)
+    model: google/gemini-2.5-flash-lite-preview-09-2025
     model_provider: openai
-    api_key:  # Set ANTHROPIC_API_KEY env var, or paste key here
-    base_url: https://api.anthropic.com/v1
-  max_requests_per_minute: 50
-  max_requests_per_day: 1000
+    api_key:  # Set OPENROUTER_API_KEY env var, or paste key here
+    base_url: https://openrouter.ai/api/v1
+
+    # Option 2: Google AI Studio direct (FREE, 15 RPM)
+    # model: gemini-2.5-flash
+    # model_provider: google_genai
+    # api_key:  # Get free key from https://aistudio.google.com/apikey
+
+    # Option 3: Local Ollama (uses your GPU - not recommended if doing image+video too)
+    # model: qwen2.5:32b
+    # model_provider: openai
+    # base_url: http://localhost:11434/v1
+    # api_key: "ollama"
+  max_requests_per_minute: 500
+  max_requests_per_day: 2000
 
 image_generator:
   class_path: tools.ImageGeneratorFluxLocal
   init_args:
-    # FLUX.1-dev: High quality, ~5-10 sec/image on 96GB GPU
-    # Alternative: "black-forest-labs/FLUX.1-schnell" for 4-step fast generation
-    model_id: "black-forest-labs/FLUX.1-dev"
-    num_inference_steps: 28
+    # FLUX.1-schnell: 4-step generation, ~2-3 sec/image on 96GB GPU (NO login required)
+    # For higher quality, use "black-forest-labs/FLUX.1-dev" with 28 steps (requires HF login)
+    model_id: "black-forest-labs/FLUX.1-schnell"
+    num_inference_steps: 4
     height: 900
     width: 1600
-    guidance_scale: 3.5
+    guidance_scale: 0.0
     device: "cuda"
     dtype: "bfloat16"
   max_requests_per_minute: null

@@ -3,30 +3,30 @@
 # Same as idea2video_local.yaml but for the script2video pipeline.
 #
 # Uses:
-#   - Claude (Sonnet/Opus) via Anthropic API for planning
-#   - FLUX.1-dev (local) for image generation
+#   - Gemini 2.5 Flash Lite via OpenRouter (FREE) for planning
+#   - FLUX.1-schnell (local) for image generation
 #   - LTX-Video 2 (local) for video generation
 #
 # Required environment variables:
-#   - ANTHROPIC_API_KEY: Your Anthropic API key for Claude
+#   - OPENROUTER_API_KEY: Free key from https://openrouter.ai/keys
 
 chat_model:
   init_args:
-    model: anthropic/claude-sonnet-4-20250514
+    model: google/gemini-2.5-flash-lite-preview-09-2025
     model_provider: openai
-    api_key:  # Set ANTHROPIC_API_KEY env var, or paste key here
-    base_url: https://api.anthropic.com/v1
-  max_requests_per_minute: 50
-  max_requests_per_day: 1000
+    api_key:  # Set OPENROUTER_API_KEY env var, or paste key here
+    base_url: https://openrouter.ai/api/v1
+  max_requests_per_minute: 500
+  max_requests_per_day: 2000
 
 image_generator:
   class_path: tools.ImageGeneratorFluxLocal
   init_args:
-    model_id: "black-forest-labs/FLUX.1-dev"
-    num_inference_steps: 28
+    model_id: "black-forest-labs/FLUX.1-schnell"
+    num_inference_steps: 4
     height: 900
     width: 1600
-    guidance_scale: 3.5
+    guidance_scale: 0.0
     device: "cuda"
     dtype: "bfloat16"
   max_requests_per_minute: null
