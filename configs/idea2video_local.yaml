@@ -1,51 +1,23 @@
 # ViMax Local Configuration
 # ===========================
 # Uses:
-#   - Gemini 2.5 Flash Lite via OpenRouter (FREE) for scripting/planning
+#   - GPT-OSS 120B via Groq (FREE, fast) for scripting/planning
 #   - FLUX.1-schnell (local, no login required) for image generation
 #   - LTX-Video 2 (local) for video generation
 #
 # Hardware: RTX PRO 6000 (96GB VRAM) or any 24GB+ GPU
 #
 # Required environment variables:
-#   - OPENROUTER_API_KEY: Free key from https://openrouter.ai/keys
-#
-# Optional: Set HF_TOKEN for gated model access
-#
-# ---
-# WHY DO WE NEED AN LLM API?
-# ViMax calls the LLM programmatically 50-100+ times during video generation
-# (scripting, storyboarding, shot decomposition, reference image selection).
-# This CANNOT be done manually — it must be an API endpoint.
-#
-# FREE OPTIONS:
-#   1. Gemini 2.5 Flash Lite via OpenRouter (recommended, free tier)
-#   2. Gemini 2.5 Flash via Google AI Studio (free, 15 RPM)
-#   3. Local LLM via Ollama (e.g., Qwen 2.5 32B) — but shares GPU with image/video
-#
-# If you want to use your Kiro/Claude for the IDEA (story concept), just write
-# your idea in main_idea2video.py and let the free LLM handle the pipeline calls.
+#   - GROQ_API_KEY: Your Groq API key from https://console.groq.com/keys
 
 chat_model:
   init_args:
-    # Option 1: Gemini Flash Lite via OpenRouter (FREE)
-    model: google/gemini-2.5-flash-lite-preview-09-2025
+    model: openai/gpt-oss-120b
     model_provider: openai
-    api_key:  # Set OPENROUTER_API_KEY env var, or paste key here
-    base_url: https://openrouter.ai/api/v1
-
-    # Option 2: Google AI Studio direct (FREE, 15 RPM)
-    # model: gemini-2.5-flash
-    # model_provider: google_genai
-    # api_key:  # Get free key from https://aistudio.google.com/apikey
-
-    # Option 3: Local Ollama (uses your GPU - not recommended if doing image+video too)
-    # model: qwen2.5:32b
-    # model_provider: openai
-    # base_url: http://localhost:11434/v1
-    # api_key: "ollama"
-  max_requests_per_minute: 500
-  max_requests_per_day: 2000
+    api_key:  # Set GROQ_API_KEY env var, or paste key here
+    base_url: https://api.groq.com/openai/v1
+  max_requests_per_minute: 30
+  max_requests_per_day: 1000
 
 image_generator:
   class_path: tools.ImageGeneratorFluxLocal

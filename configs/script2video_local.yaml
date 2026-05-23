@@ -3,21 +3,21 @@
 # Same as idea2video_local.yaml but for the script2video pipeline.
 #
 # Uses:
-#   - Gemini 2.5 Flash Lite via OpenRouter (FREE) for planning
+#   - GPT-OSS 120B via Groq (FREE, fast) for planning
 #   - FLUX.1-schnell (local) for image generation
 #   - LTX-Video 2 (local) for video generation
 #
 # Required environment variables:
-#   - OPENROUTER_API_KEY: Free key from https://openrouter.ai/keys
+#   - GROQ_API_KEY: Your Groq API key from https://console.groq.com/keys
 
 chat_model:
   init_args:
-    model: google/gemini-2.5-flash-lite-preview-09-2025
+    model: openai/gpt-oss-120b
     model_provider: openai
-    api_key:  # Set OPENROUTER_API_KEY env var, or paste key here
-    base_url: https://openrouter.ai/api/v1
-  max_requests_per_minute: 500
-  max_requests_per_day: 2000
+    api_key:  # Set GROQ_API_KEY env var, or paste key here
+    base_url: https://api.groq.com/openai/v1
+  max_requests_per_minute: 30
+  max_requests_per_day: 1000
 
 image_generator:
   class_path: tools.ImageGeneratorFluxLocal
