@@ -29,6 +29,16 @@ PROVIDER_PRESETS: Dict[str, Dict[str, Any]] = {
         ],
         "temperature_range": (0.0, 1.0),
     },
+    "anthropic": {
+        "base_url": "https://api.anthropic.com/v1",
+        "env_key": "ANTHROPIC_API_KEY",
+        "default_model": "anthropic/claude-sonnet-4-20250514",
+        "models": [
+            "anthropic/claude-sonnet-4-20250514",
+            "anthropic/claude-opus-4-20250514",
+        ],
+        "temperature_range": (0.0, 1.0),
+    },
 }
 
 
