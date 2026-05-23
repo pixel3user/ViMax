@@ -29,6 +29,29 @@ PROVIDER_PRESETS: Dict[str, Dict[str, Any]] = {
         ],
         "temperature_range": (0.0, 1.0),
     },
+    "anthropic": {
+        "base_url": "https://api.anthropic.com/v1",
+        "env_key": "ANTHROPIC_API_KEY",
+        "default_model": "anthropic/claude-sonnet-4-20250514",
+        "models": [
+            "anthropic/claude-sonnet-4-20250514",
+            "anthropic/claude-opus-4-20250514",
+        ],
+        "temperature_range": (0.0, 1.0),
+    },
+    "groq": {
+        "base_url": "https://api.groq.com/openai/v1",
+        "env_key": "GROQ_API_KEY",
+        "default_model": "openai/gpt-oss-120b",
+        "models": [
+            "openai/gpt-oss-120b",
+            "openai/gpt-oss-20b",
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant",
+            "mixtral-8x7b-32768",
+        ],
+        "temperature_range": (0.0, 2.0),
+    },
 }
 
 

@@ -1,0 +1,53 @@
+# ViMax Local Configuration
+# ===========================
+# Uses:
+#   - GPT-OSS 120B via Groq (FREE, fast) for scripting/planning
+#   - FLUX.1-schnell (local, no login required) for image generation
+#   - LTX-Video 2 (local) for video generation
+#
+# Hardware: RTX PRO 6000 (96GB VRAM) or any 24GB+ GPU
+#
+# Required environment variables:
+#   - GROQ_API_KEY: Your Groq API key from https://console.groq.com/keys
+
+chat_model:
+  init_args:
+    model: openai/gpt-oss-120b
+    model_provider: openai
+    api_key:  # Set GROQ_API_KEY env var, or paste key here
+    base_url: https://api.groq.com/openai/v1
+  max_requests_per_minute: 30
+  max_requests_per_day: 1000
+
+image_generator:
+  class_path: tools.ImageGeneratorFluxLocal
+  init_args:
+    # FLUX.1-schnell: 4-step generation, ~2-3 sec/image on 96GB GPU (NO login required)
+    # For higher quality, use "black-forest-labs/FLUX.1-dev" with 28 steps (requires HF login)
+    model_id: "black-forest-labs/FLUX.1-schnell"
+    num_inference_steps: 4
+    height: 900
+    width: 1600
+    guidance_scale: 0.0
+    device: "cuda"
+    dtype: "bfloat16"
+  max_requests_per_minute: null
+  max_requests_per_day: null
+
+video_generator:
+  class_path: tools.VideoGeneratorLTXLocal
+  init_args:
+    # LTX-Video 2: Fast video generation, ~10-15 sec/clip on 96GB GPU
+    model_id: "Lightricks/LTX-Video-0.9.7"
+    num_inference_steps: 30
+    height: 720
+    width: 1280
+    num_frames: 121  # ~5 seconds at 24fps
+    fps: 24
+    guidance_scale: 3.0
+    device: "cuda"
+    dtype: "bfloat16"
+  max_requests_per_minute: null
+  max_requests_per_day: null
+
+working_dir: .working_dir/idea2video_local
